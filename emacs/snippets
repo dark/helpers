@@ -27,6 +27,10 @@
 ;; CTRL-Q -> delete (not cut) selection
 (global-set-key (kbd "C-q") 'delete-region)
 
+;; for easier window navigation
+(global-set-key (kbd "C-.") 'other-window)
+(global-set-key (kbd "C-,") 'previous-multiframe-window)
+
 ;; Backup file tweaks
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
 (setq backup-by-copying t)
