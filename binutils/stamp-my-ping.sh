@@ -30,7 +30,9 @@ function tsloop() {
 }
 
 tsloop &
+PID1=$!
 pingloop &
-echo "Waiting..." >&2
-wait
+PID2=$!
+echo "Waiting for PIDs ${PID1} and ${PID2} ..." >&2
+wait "${PID1}" "${PID2}"
 echo "Done waiting." >&2
