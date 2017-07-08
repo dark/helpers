@@ -26,7 +26,13 @@ else
 fi
 unset SCRIPTDIR
 
+# aliases ...
 alias git-log-pretty='git log --graph --oneline --decorate --date-order --exclude=refs/notes/* --all'
 alias git-log-pretty-full='git log --graph --oneline --decorate --date-order --all'
 alias git-log-pretty-some='git log --graph --oneline --decorate --date-order'
 alias git-log-notes='git log --notes=refs/notes/review'
+# ... and their completions
+complete -C 'git-all-refspecs --bashcomp' git-log-pretty
+complete -C 'git-all-refspecs --bashcomp' git-log-pretty-full
+complete -C 'git-all-refspecs --bashcomp' git-log-pretty-some
+complete -C 'git-all-refspecs --bashcomp' git-log-notes

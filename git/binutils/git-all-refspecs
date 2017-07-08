@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+#    Bash completion wrapper to show useful Git refspecs
+#    Copyright (C) 2017  Marco Leogrande
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+function echo_all_refspecs() {
+  # echo some default refspecs
+  for i in HEAD FETCH_HEAD ORIG_HEAD MERGE_HEAD; do
+    echo $i
+  done
+  # list all tags, local and remote branches to help autocompletion
+  git for-each-ref '--format=%(refname:short)' refs/tags refs/heads refs/remotes
+}
+
+function select_refspecs() {
+  local stem="${1}"
+  for b in $(echo_all_refspecs); do
+    # if there is a stem, select only the refspecs that match it
+    if [[ "${stem}" == "${b:0:${#stem}}" ]]; then
+      echo "${b}"
+    fi
+  done
+}
+
+if [[ "$1" == "--bashcomp" ]]; then
+  # bash completion support - the stem will be in the third parameter
+  select_refspecs "${3}"
+else
+  select_refspecs ""
+fi
+
+exit 0
