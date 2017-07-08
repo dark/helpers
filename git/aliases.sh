@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #    Bash aliases for Git directories
-#    Copyright (C) 2016  Marco Leogrande
+#    Copyright (C) 2016, 2017  Marco Leogrande
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -16,6 +16,15 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+# Import the binutils/ subdirectory as part of the PATH.
+SCRIPTDIR=$(readlink -e "$(dirname "${BASH_SOURCE[0]}")" )
+if [[ -n "${SCRIPTDIR}" ]]; then
+  export PATH="${PATH}:${SCRIPTDIR}/binutils/"
+else
+  echo "${BASH_SOURCE[0]} did not point to anything useful"
+fi
+unset SCRIPTDIR
 
 alias git-log-pretty='git log --graph --oneline --decorate --date-order --exclude=refs/notes/* --all'
 alias git-log-pretty-full='git log --graph --oneline --decorate --date-order --all'
