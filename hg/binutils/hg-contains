@@ -1,0 +1,90 @@
+#!/bin/bash
+#
+#    Check the common ancestry of two or more mercurial commit
+#    Copyright (C) 2018  Marco Leogrande
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+function usage () {
+  echo "$(basename ${0}) [--latest] MAIN_REVISION REVISION1 [REVISION2 ...]"
+  echo '  Check whether REVISION1, REVISION2 are ancestors of MAIN_REVISION.'
+  echo '  Imagining that MAIN_REVISION is a branch, this is equivalent in spirit to:.'
+  echo '    git branch --contains REVISION1 MAIN_REVISION'
+  echo '  hence the name.'
+  echo '  If --latest is provided, then REVISION1, REVISION2 are converted to their latest versions'
+  echo '  before resolving.'
+}
+
+function resolve_one () {
+  local use_latest="${1}"
+  local main_revision="${2}"
+  local revision="${3}"
+
+  if ! [[ "${revision}" =~ ^[0-9a-f]+$ ]]; then
+    echo "'${revision}' is not a valid revision."
+    return 1
+  fi
+
+  if [[ "${use_latest}" == 'yes' ]]; then
+    local latest="$(hg-latest "${revision}")"
+    if [[ -z "${latest}" ]]; then
+      echo "Could not determine latest version of revision '${revision}'."
+      return 1
+    fi
+    echo "  The latest version of '${revision}' is '${latest}'."
+    revision="${latest}"
+  fi
+
+  local result="$(hg log -T '{node}\n' -r "ancestor(${main_revision}, ${revision})")"
+  if [[ -z "${result}" ]]; then
+    echo "Could not determine ancestry of revision '${revision}'."
+    return 1
+  fi
+
+  if [[ "${result}" =~ ^"${revision}" ]]; then
+    echo "'${revision}' is an ancestor of '${main_revision}'."
+  else
+    echo "'${revision}' is NOT an ancestor of '${main_revision}'."
+  fi
+
+  return 0
+}
+
+if [[ "$#" -lt 2 ]]; then
+  usage
+  exit 0
+fi
+
+USE_LATEST='no'
+if [[ "${1}" == '--latest' ]]; then
+  USE_LATEST='yes'
+  shift
+fi
+
+MAIN_REVISION="${1}"
+shift
+
+# Any arguments remaining?
+if [[ "$#" -lt 1 ]]; then
+  usage
+  exit 0
+fi
+
+while [[ "$#" -ge 1 ]]; do
+  resolve_one "${USE_LATEST}" "${MAIN_REVISION}" "${1}"
+  shift
+done
+
+exit 0

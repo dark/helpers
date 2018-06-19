@@ -25,3 +25,6 @@ else
   echo "${BASH_SOURCE[0]} did not point to anything useful"
 fi
 unset SCRIPTDIR
+
+# aliases ...
+alias hg-contains-latest='hg-contains --latest'
