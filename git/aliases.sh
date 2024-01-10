@@ -20,7 +20,9 @@
 # Import the bin/ subdirectory as part of the PATH.
 SCRIPTDIR=$(readlink -e "$(dirname "${BASH_SOURCE[0]}")" )
 if [[ -n "${SCRIPTDIR}" ]]; then
-  export PATH="${PATH}:${SCRIPTDIR}/bin/"
+  if ! echo "${PATH}" | grep -q ":${SCRIPTDIR}/bin/"; then
+    export PATH="${PATH}:${SCRIPTDIR}/bin/"
+  fi
 else
   echo "${BASH_SOURCE[0]} did not point to anything useful"
 fi
