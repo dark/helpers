@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-#    Generic Bash aliases
-#    Copyright (C) 2017  Marco Leogrande
+#    Wait for a PID to terminate
+#    Copyright (C) 2024  Marco Leogrande
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -17,18 +17,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Import the bin/ subdirectory as part of the PATH.
-SCRIPTDIR=$(readlink -e "$(dirname "${BASH_SOURCE[0]}")" )
-if [[ -n "${SCRIPTDIR}" ]]; then
-  if ! echo "${PATH}" | grep -q ":${SCRIPTDIR}/bin/"; then
-    export PATH="${PATH}:${SCRIPTDIR}/bin/"
-  fi
-else
-  echo "${BASH_SOURCE[0]} did not point to anything useful"
-fi
-unset SCRIPTDIR
+[[ $# -lt 1 ]] && echo 'No PID to wait for.' && exit 1
 
-# aliases ...
-alias ps-full='ps -eHo euser,pid,tid,ppid,pgrp,ni,psr,pcpu,pmem,cputime,rss,vsz,stat,start,wchan:20,args'
-alias xopen='xdg-open'
-alias ssh-nomem='ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+tail --pid="${1}" -s 10 -f /dev/null
