@@ -17,10 +17,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Import the binutils/ subdirectory as part of the PATH.
+# Import the bin/ subdirectory as part of the PATH.
 SCRIPTDIR=$(readlink -e "$(dirname "${BASH_SOURCE[0]}")" )
 if [[ -n "${SCRIPTDIR}" ]]; then
-  export PATH="${PATH}:${SCRIPTDIR}/binutils/"
+  export PATH="${PATH}:${SCRIPTDIR}/bin/"
 else
   echo "${BASH_SOURCE[0]} did not point to anything useful"
 fi
